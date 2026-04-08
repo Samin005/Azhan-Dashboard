@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Azhan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Arabic Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================================
+   GLOBAL
+============================================================ */
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: "Segoe UI", system-ui, sans-serif;
+            color: white;
+            overflow-y: auto;
+            background-image: url('resources/quran1.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: opacity 0.8s ease-in-out;
+            /* animation: bgRotate 40s infinite alternate ease-in-out; */
+        }
+
+        /* Rotating Backgrounds */
+        @keyframes bgRotate {
+            0% {
+                background: linear-gradient(135deg, #0d1117, #1f2937);
+            }
+
+            20% {
+                background: linear-gradient(135deg, #1e3a8a, #0f172a);
+            }
+
+            40% {
+                background: linear-gradient(135deg, #0f766e, #042f2e);
+            }
+
+            60% {
+                background: linear-gradient(135deg, #4c1d95, #1e1b4b);
+            }
+
+            80% {
+                background: linear-gradient(135deg, #7c2d12, #431407);
+            }
+
+            100% {
+                background: linear-gradient(135deg, #0d1117, #1f2937);
+            }
+        }
+
+        /* ============================================================
+   HEADER + TIME + DATE
+============================================================ */
+        header {
+            text-align: center;
+            padding: 20px 0 5px;
+            font-size: 2.4rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: #4dd2ff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        #time {
+            text-align: center;
+            font-size: 4.5rem;
+            margin-top: -10px;
+            color: #ffffff;
+            font-weight: 600;
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 0, 0, 0.6);
+        }
+
+        #date,
+        #hijri {
+            text-align: center;
+            font-size: 1.1rem;
+            opacity: 0.85;
+            margin-top: 2px;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        #nextPrayerCountdown {
+            text-align: center;
+            font-size: 2.8rem;
+            opacity: 1;
+            margin-top: 12px;
+            color: #ffffff;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 5px 0;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        #nextPrayerCountdown span {
+            background-color: #4dd2ff;
+            border: 2px solid #4dd2ff;
+            padding: 5px 12px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(77, 210, 255, 0.3);
+            display: inline-block;
+        }
+
+        @keyframes flash {
+            0%, 100% { background-color: #4dd2ff; box-shadow: 0 0 15px rgba(77, 210, 255, 0.3); }
+            50% { background-color: #ff4d4d; border-color: #ff4d4d; box-shadow: 0 0 15px rgba(255, 77, 77, 0.8); }
+        }
+
+        #nextPrayerCountdown span.flashing {
+            animation: flash 1s ease-in-out infinite;
+        }
+
+        /* Countdown Row Container */
+        #countdownRow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 12px;
+        }
+
+        /* Circular Cards */
+        .circular-card {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 2px solid #4dd2ff;
+            box-shadow: 0 0 15px rgba(77, 210, 255, 0.3);
+            background: rgba(77, 210, 255, 0.1);
+            margin: 0 15px;
+        }
+
+        .circular-card-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+        }
+
+        .circular-card-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 0 0 18px rgba(0, 0, 0, 0.6);
+        }
+
+        #weatherCard .circular-card-value {
+            font-size: 2rem;
+        }
+
+        #sunriseSunsetCard .circular-card-value {
+            font-size: 1.3rem;
+            line-height: 1.5;
+        }
+
+        /* ============================================================
+   PRAYER CARDS
+============================================================ */
+        #prayers {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px;
+            gap: 10px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 14px;
+            padding: 16px 12px;
+            flex: 1;
+            text-align: center;
+            backdrop-filter: blur(6px);
+            transition: 0.3s;
+        }
+
+        .card.highlight {
+            background-color: #4dd2ff;
+            border-color: #4dd2ff;
+            box-shadow: 0 0 12px #4dd2ff;
+        }
+
+        .prayer-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+        }
+
+        .prayer-time {
+            font-size: 3.2rem;
+            font-weight: 600;
+            margin-top: 4px;
+            text-shadow: 0 0 12px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+
+        /* ============================================================
+   CONTENT ROTATION
+============================================================ */
+        #content {
+            flex: 1;
+            margin: 0 20px 20px;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 45vh;
+            overflow: hidden;
+        }
+
+        #label {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: #7dd3fc;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+        }
+
+        #text {
+            font-size: 2.5rem;
+            line-height: 2.6rem;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .arabic {
+            font-family: "Amiri", serif;
+            direction: rtl;
+            text-align: right;
+            font-size: 2rem;
+            line-height: 2.6rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ============================================================
+   ANNOUNCEMENT BAR
+============================================================ */
+        #ticker {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 10px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            height: 40px;
+        }
+
+        #ticker span {
+            position: absolute;
+            animation: scroll 25s linear infinite;
+            font-size: 1.1rem;
+            opacity: 0.9;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes scroll {
+            from {
+                left: 100%;
+            }
+
+            to {
+                left: -100%;
+            }
+        }
+
+        /* ============================================================
+   SETTINGS PANEL
+============================================================ */
+
+        /* Gear Icon */
+        #settingsBtn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #4dd2ff;
+            text-shadow: 0 0 8px #4dd2ff;
+            transition: 0.2s;
+        }
+
+        #settingsBtn:hover {
+            transform: scale(1.15);
+        }
+
+        /* Overlay */
+        #overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(2px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+            z-index: 9998;
+        }
+
+        /* Panel Container */
+        #settingsPanel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 90vh;
+            background: rgba(20, 20, 20, 0.55);
+            backdrop-filter: blur(14px);
+            border-left: 2px solid #4dd2ff;
+            box-shadow: 0 0 20px #4dd2ff;
+            padding: 20px;
+            overflow-y: auto;
+            border-radius: 12px 0 0 12px;
+            transform: scale(0.97);
+            transition: right 0.35s ease, transform 0.35s ease;
+            z-index: 9999;
+        }
+
+        #settingsPanel.open {
+            right: 0;
+            transform: scale(1);
+        }
+
+        #overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Section Titles */
+        .settings-section {
+            margin-top: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #7dd3fc;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 6px;
+            margin-bottom: 5px;
+        }
+
+        /* Inputs */
+        .settings-item {
+            margin-bottom: 12px;
+        }
+
+        .settings-item label {
+            display: block;
+            margin-bottom: 4px;
+            opacity: 0.85;
+        }
+
+        .settings-item input,
+        .settings-item select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .settings-item select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        /* Toggle Switch */
+        .toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .toggle input {
+            transform: scale(1.4);
+        }
+
+        /* Buttons */
+        .settings-btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #4dd2ff;
+            color: black;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .settings-btn:hover {
+            background: #7de3ff;
+        }
+
+        /* Adhan Buttons Container */
+        .adhan-buttons-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .adhan-buttons-container .settings-btn {
+            flex: 1;
+        }
+
+        /* Notification Popup */
+        #notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            transform: translateX(500px) scale(0);
+            background: #4dd2ff;
+            color: black;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 20px rgba(77, 210, 255, 0.4);
+            z-index: 10000;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #notification.show {
+            transform: translateX(0) scale(1);
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Gear Icon -->
+    <div id="settingsBtn">⚙️</div>
+
+    <!-- Overlay -->
+    <div id="overlay"></div>
+
+    <!-- Notification Popup -->
+    <div id="notification"></div>
+
+    <!-- Settings Panel -->
+    <div id="settingsPanel">
+
+        <div class="settings-section">Location</div>
+        <div class="settings-item">
+            <label>City</label>
+            <input id="cityInput" type="text">
+        </div>
+        <div class="settings-item">
+            <label>Country</label>
+            <input id="countryInput" type="text">
+        </div>
+
+        <div class="settings-section">Display Options</div>
+        <div class="toggle">
+            <label>Show Hijri Date</label>
+            <input id="toggleHijri" type="checkbox">
+        </div>
+        <div class="toggle">
+            <label>Show Weather</label>
+            <input id="toggleWeather" type="checkbox">
+        </div>
+        <div class="toggle">
+            <label>Show Announcement Bar</label>
+            <input id="toggleTicker" type="checkbox">
+        </div>
+        <div class="toggle">
+            <label>12-Hour Format</label>
+            <input id="toggle12Hour" type="checkbox">
+        </div>
+
+        <div class="settings-section">Audio</div>
+        <div class="toggle">
+            <label>Enable Adhan</label>
+            <input id="toggleAdhan" type="checkbox">
+        </div>
+        <div class="toggle">
+            <label>Enable Dua</label>
+            <input id="toggleDua" type="checkbox">
+        </div>
+        <div class="settings-item">
+            <label>Volume</label>
+            <input id="adhanVolume" type="range" min="0" max="1" step="0.01">
+        </div>
+
+        <div class="settings-item">
+            <label>Adhan Voice</label>
+            <select id="adhanVoice">
+                <option value="Mecca">Mecca</option>
+            </select>
+        </div>
+        <div class="adhan-buttons-container">
+            <button class="settings-btn" id="testAdhan">▶ Test</button>
+            <button class="settings-btn" id="stopAdhan">⏹ Stop</button>
+        </div>
+
+        <div class="settings-item">
+            <label>Dua Voice</label>
+            <select id="duaVoice">
+                <option value="Mecca">Mecca</option>
+            </select>
+        </div>
+        <div class="adhan-buttons-container">
+            <button class="settings-btn" id="testDua">▶ Test</button>
+            <button class="settings-btn" id="stopDua">⏹ Stop</button>
+        </div>
+
+        <div class="settings-section">Content Rotation</div>
+        <div class="settings-item">
+            <label>Rotation Speed (seconds)</label>
+            <select id="rotationSpeed">
+                <option value="5000">5</option>
+                <option value="10000">10</option>
+                <option value="15000">15</option>
+                <option value="30000">30</option>
+            </select>
+        </div>
+
+        <button class="settings-btn" id="saveSettings">Save Settings</button>
+        <button class="settings-btn" id="resetSettings">Reset to Default</button>
+
+    </div>
+
+    <header>Azhan Dashboard</header>
+    <div id="time"></div>
+    <div id="date"></div>
+    <div id="hijri"></div>
+    <div id="countdownRow">
+        <div id="weatherCard" class="circular-card">
+            <div class="circular-card-label"></div>
+            <div class="circular-card-value"></div>
+        </div>
+        <div id="nextPrayerCountdown"></div>
+        <div id="sunriseSunsetCard" class="circular-card">
+            <div class="circular-card-value">
+                <div style="font-size: 0.9rem; margin-bottom: 4px;">Sunrise <br> <span id="sunriseTime" style="font-size: 1.4rem;"></span></div>
+                <hr style="border-top: 1px solid rgba(255,255,255,0.9); margin: 4px 0; width: 100%;">
+                <div style="font-size: 0.9rem; margin-top: 4px;color: orange;"> <span id="sunsetTime" style="font-size: 1.4rem;"></span> <br> Sunset</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="prayers">
+        <div class="card" id="Fajr">
+            <div class="prayer-name">Fajr</div>
+            <div class="prayer-time"></div>
+        </div>
+        <div class="card" id="Dhuhr">
+            <div class="prayer-name">Dhuhr</div>
+            <div class="prayer-time"></div>
+        </div>
+        <div class="card" id="Asr">
+            <div class="prayer-name">Asr</div>
+            <div class="prayer-time"></div>
+        </div>
+        <div class="card" id="Maghrib">
+            <div class="prayer-name">Maghrib</div>
+            <div class="prayer-time"></div>
+        </div>
+        <div class="card" id="Isha">
+            <div class="prayer-name">Isha</div>
+            <div class="prayer-time"></div>
+        </div>
+    </div>
+
+    <div id="content">
+        <div id="label"></div>
+        <div id="text"></div>
+    </div>
+
+    <div id="ticker"><span>Welcome to Azhan Dashboard — May Allah bless your time and your home.</span></div>
+
+    <audio id="adhan" src="resources/Adhan - Mecca.mp3"></audio>
+    <audio id="dua" src="resources/Adhan - dua.mp3"></audio>
+
+    <script>
+        /* ============================================================
+           BACKGROUND IMAGE ROTATION
+        ============================================================ */
+        const backgroundImages = [
+            'resources/kaaba.jpg',
+            'resources/quran1.png',
+            'resources/mosque1.jpg',
+        ];
+        let currentBgIndex = 0;
+
+        function rotateBackground() {
+            document.body.style.opacity = '0.7';
+            setTimeout(() => {
+                currentBgIndex = (currentBgIndex + 1) % backgroundImages.length;
+                document.body.style.backgroundImage = `url('${backgroundImages[currentBgIndex]}')`;
+                document.body.style.opacity = '1';
+            }, 400);
+        }
+
+        // Change background every 10 seconds
+        setInterval(rotateBackground, 10000);
+
+        /* ============================================================
+           TIME FORMAT CONVERSION
+        ============================================================ */
+        function formatTime(date, use12Hour = false) {
+            if (use12Hour) {
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+            }
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        }
+
+        function convertTo12Hour(timeStr) {
+            const [h, m] = timeStr.split(":").map(Number);
+            const period = h >= 12 ? "PM" : "AM";
+            const hour12 = h % 12 || 12;
+            return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
+        }
+
+        /* ============================================================
+           CLOCK
+        ============================================================ */
+        setInterval(() => {
+            const now = new Date();
+            const use12Hour = JSON.parse(localStorage.getItem("use12Hour") || "true");
+            document.getElementById("time").innerText = formatTime(now, use12Hour);
+            document.getElementById("date").innerText =
+                now.toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }, 1000);
+
+        /* ============================================================
+           HIJRI DATE
+        ============================================================ */
+        function loadHijri() {
+            fetch("https://api.aladhan.com/v1/gToH")
+                .then(r => r.json())
+                .then(d => {
+                    const h = d.data.hijri;
+                    document.getElementById("hijri").innerText =
+                        `${h.weekday.en}, ${h.day} ${h.month.en} ${h.year} AH`;
+                });
+        }
+        loadHijri();
+
+        /* ============================================================
+           GEOCODING (Get accurate coordinates from city/country)
+        ============================================================ */
+        function getCoordinates(city, country) {
+            return fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&count=1&language=en&format=json`)
+                .then(r => r.json())
+                .then(d => {
+                    if (d.results && d.results.length > 0) {
+                        const result = d.results[0];
+                        return {
+                            latitude: result.latitude,
+                            longitude: result.longitude
+                        };
+                    }
+                    throw new Error("Location not found");
+                });
+        }
+
+        /* ============================================================
+           WEATHER
+        ============================================================ */
+        function fetchWeather(lat, lon) {
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m&temperature_unit=celsius`)
+                .then(r => r.json())
+                .then(d => {
+                    const temp = Math.round(d.current.temperature_2m);
+                    document.querySelector("#weatherCard .circular-card-label").innerText = "Weather";
+                    document.querySelector("#weatherCard .circular-card-value").innerText = `${temp}°C`;
+                });
+        }
+
+        /* ============================================================
+           PRAYER TIMES
+        ============================================================ */
+        let prayerTimes = {};
+        let sunriseSunsetTimes = {};
+        let currentLat = null;
+        let currentLon = null;
+        let weatherUpdateInterval = null;
+
+        function loadPrayerTimes() {
+            const city = localStorage.getItem("city") || "Ottawa";
+            const country = localStorage.getItem("country") || "Canada";
+
+            fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=2`)
+                .then(r => r.json())
+                .then(d => {
+                    prayerTimes = d.data.timings;
+                    sunriseSunsetTimes = {
+                        Sunrise: d.data.timings.Sunrise,
+                        Sunset: d.data.timings.Sunset
+                    };
+                    const use12Hour = JSON.parse(localStorage.getItem("use12Hour") || "true");
+                    for (const p of ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"]) {
+                        const timeStr = use12Hour ? convertTo12Hour(prayerTimes[p]) : prayerTimes[p];
+                        document.querySelector(`#${p} .prayer-time`).innerText = timeStr;
+                    }
+                    // Display sunrise and sunset in circular card
+                    for (const p of ["Sunrise", "Sunset"]) {
+                        const timeStr = use12Hour ? convertTo12Hour(sunriseSunsetTimes[p]) : sunriseSunsetTimes[p];
+                        document.getElementById(`${p.toLowerCase()}Time`).innerText = timeStr;
+                    }
+                    highlightNextPrayer();
+                    // Fetch accurate coordinates and then weather
+                    getCoordinates(city, country)
+                        .then(coords => {
+                            currentLat = coords.latitude;
+                            currentLon = coords.longitude;
+                            fetchWeather(coords.latitude, coords.longitude);
+                            // Set up hourly weather updates
+                            if (weatherUpdateInterval) clearInterval(weatherUpdateInterval);
+                            weatherUpdateInterval = setInterval(() => {
+                                fetchWeather(currentLat, currentLon);
+                            }, 3600000); // Update every hour
+                        })
+                        .catch(err => {
+                            console.error("Could not fetch coordinates:", err);
+                            // Fallback to Aladhan's coordinates if geocoding fails
+                            fetchWeather(d.data.meta.latitude, d.data.meta.longitude);
+                        });
+                });
+        }
+        loadPrayerTimes();
+
+        // Check for prayer time updates every 6 hours
+        setInterval(loadPrayerTimes, 6 * 60 * 60 * 1000);
+
+        function highlightNextPrayer() {
+            const now = new Date();
+            let current = null;
+            let currentTime = null;
+            let next = null;
+            let nextTime = null;
+            
+            // Parse prayer times
+            const prayerTimesObj = {};
+            for (const p of ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha", "Sunrise"]) {
+                const t = prayerTimes[p];
+                const [h, m] = t.split(":").map(Number);
+                const pt = new Date();
+                pt.setHours(h, m, 0);
+                prayerTimesObj[p] = pt;
+            }
+            
+            // Find current prayer (last one that has passed)
+            for (const p of ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"]) {
+                if (prayerTimesObj[p] <= now) {
+                    current = p;
+                    currentTime = prayerTimesObj[p];
+                }
+            }
+            
+            // Special handling for Fajr: show countdown to Sunrise (if not passed), then to Dhuhr
+            if (current === "Fajr") {
+                if (prayerTimesObj["Sunrise"] > now) {
+                    // Sunrise hasn't passed yet, show countdown to Sunrise
+                    next = "Sunrise";
+                    nextTime = prayerTimesObj["Sunrise"];
+                } else {
+                    // Sunrise has passed, show countdown to Dhuhr
+                    next = "Dhuhr";
+                    nextTime = prayerTimesObj["Dhuhr"];
+                }
+            } else {
+                // Normal logic for other prayers
+                for (const p of ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"]) {
+                    if (prayerTimesObj[p] > now) {
+                        next = p;
+                        nextTime = prayerTimesObj[p];
+                        break;
+                    }
+                }
+            }
+            
+            // If no next prayer found today, next is Fajr tomorrow
+            if (!next) {
+                next = "Fajr";
+                const [h, m] = prayerTimes[next].split(":").map(Number);
+                nextTime = new Date();
+                nextTime.setDate(nextTime.getDate() + 1);
+                nextTime.setHours(h, m, 0);
+            }
+            
+            // Highlight the current prayer (or Fajr if no prayer has passed yet)
+            const prayerToHighlight = current || "Fajr";
+            document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
+            document.getElementById(prayerToHighlight).classList.add("highlight");
+            
+            // Update countdown for the next prayer or sunrise
+            if (next) {
+                updateCountdown(next, nextTime);
+            }
+        }
+
+        function updateCountdown(prayerName, prayerTime) {
+            let adhanPlayed = false;
+            const countdownInterval = setInterval(() => {
+                const now = new Date();
+                const diff = prayerTime - now;
+                const use12Hour = JSON.parse(localStorage.getItem("use12Hour") || "true");
+                
+                // If prayer time has passed and adhan played, find and update to next prayer
+                if (diff <= 0 && adhanPlayed) {
+                    clearInterval(countdownInterval);
+                    // Wait a moment before checking for next prayer
+                    setTimeout(() => {
+                        highlightNextPrayer();
+                    }, 1000);
+                    return;
+                }
+                
+                const countdownText = diff <= 0 
+                    ? `Next: ${prayerName} - Starting now!`
+                    : (() => {
+                        const hours = Math.floor(diff / (1000 * 60 * 60));
+                        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                        return `Next: ${prayerName} - ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    })()
+                
+                const spanClass = diff < 1800000 ? ' class="flashing"' : '';
+                document.getElementById("nextPrayerCountdown").innerHTML = `<span${spanClass}>${countdownText}</span>`;
+                
+                // Play adhan when prayer time arrives, but never for Sunrise countdown
+                if (diff <= 0 && !adhanPlayed && prayerName !== "Sunrise" && JSON.parse(localStorage.getItem("enableAdhan") || "true")) {
+                    const selectedVoice = localStorage.getItem("adhanVoice") || "Mecca";
+                    const selectedDuaVoice = localStorage.getItem("duaVoice") || "Mecca";
+                    const audio = document.getElementById("adhan");
+                    const dua = document.getElementById("dua");
+                    audio.src = adhanSources[selectedVoice];
+                    dua.src = duaSources[selectedDuaVoice];
+                    const volume = parseFloat(localStorage.getItem("adhanVolume") || "1");
+                    audio.volume = volume;
+                    dua.volume = volume;
+                    audio.play();
+                    adhanPlayed = true;
+                }
+            }, 1000);
+        }
+
+        /* ---------------------------------------------------------
+            ADHAN AUDIO SOURCES
+        --------------------------------------------------------- */
+        const adhanSources = {
+            Mecca: "resources/Adhan - Mecca.mp3"
+        };
+
+        /* ---------------------------------------------------------
+            DUA AUDIO SOURCES
+        --------------------------------------------------------- */
+        const duaSources = {
+            Mecca: "resources/Adhan - dua.mp3"
+        };
+
+        /* ---------------------------------------------------------
+            TEST ADHAN
+        --------------------------------------------------------- */
+
+        document.getElementById("testAdhan").onclick = () => {
+            const selectedVoice = localStorage.getItem("adhanVoice") || "Mecca";
+            const audio = document.getElementById("adhan");
+            audio.src = adhanSources[selectedVoice];
+            const volume = parseFloat(localStorage.getItem("adhanVolume") || "1");
+            audio.volume = volume;
+            audio.play();
+        };
+
+        document.getElementById("stopAdhan").onclick = () => {
+            const audio = document.getElementById("adhan");
+            audio.pause();
+            audio.currentTime = 0;
+        };
+
+        /* ---------------------------------------------------------
+            TEST DUA
+        --------------------------------------------------------- */
+
+        document.getElementById("testDua").onclick = () => {
+            const selectedVoice = localStorage.getItem("duaVoice") || "Mecca";
+            const dua = document.getElementById("dua");
+            dua.src = duaSources[selectedVoice];
+            const volume = parseFloat(localStorage.getItem("adhanVolume") || "1");
+            dua.volume = volume;
+            dua.play();
+        };
+
+        document.getElementById("stopDua").onclick = () => {
+            const dua = document.getElementById("dua");
+            dua.pause();
+            dua.currentTime = 0;
+        };
+
+        /* ---------------------------------------------------------
+            AUTO PLAY DUA AFTER ADHAN
+        --------------------------------------------------------- */
+        document.getElementById("adhan").addEventListener("ended", () => {
+            if (JSON.parse(localStorage.getItem("enableDua") || "true")) {
+                const selectedDuaVoice = localStorage.getItem("duaVoice") || "Mecca";
+                const dua = document.getElementById("dua");
+                dua.src = duaSources[selectedDuaVoice];
+                dua.play();
+            }
+        });
+
+        /* ---------------------------------------------------------
+            VOLUME SLIDER REAL-TIME UPDATE
+        --------------------------------------------------------- */
+        document.getElementById("adhanVolume").oninput = () => {
+            const audio = document.getElementById("adhan");
+            const dua = document.getElementById("dua");
+            const volume = parseFloat(document.getElementById("adhanVolume").value);
+            audio.volume = volume;
+            dua.volume = volume;
+        };
+
+        /* ---------------------------------------------------------
+            12-HOUR FORMAT TOGGLE REAL-TIME UPDATE
+        --------------------------------------------------------- */
+        document.getElementById("toggle12Hour").onchange = () => {
+            localStorage.setItem("use12Hour", document.getElementById("toggle12Hour").checked);
+            const use12Hour = document.getElementById("toggle12Hour").checked;
+            // Update prayer times
+            for (const p of ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"]) {
+                const timeStr = use12Hour ? convertTo12Hour(prayerTimes[p]) : prayerTimes[p];
+                document.querySelector(`#${p} .prayer-time`).innerText = timeStr;
+            }
+            // Update sunrise and sunset in circular card
+            for (const p of ["Sunrise", "Sunset"]) {
+                const timeStr = use12Hour ? convertTo12Hour(sunriseSunsetTimes[p]) : sunriseSunsetTimes[p];
+                document.getElementById(`${p.toLowerCase()}Time`).innerText = timeStr;
+            }
+            loadPrayerTimes();
+        };
+
+        /* ============================================================
+            AUTO ADHAN - Handled by countdown timer
+        ============================================================ */
+
+
+        /* ============================================================
+           ROTATING CONTENT
+        ============================================================ */
+        let items = [
+            { label: "Hadith", arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ", text: "Actions are but by intentions. (Sahih Bukhari 1)" },
+            { label: "Hadith", arabic: "خَيْرُكُمْ خَيْرُكُمْ لِأَهْلِهِ", text: "The best among you are those who are best to their families. (Sahih Bukhari 5193)" },
+            { label: "Hadith", arabic: "الْقَوِيُّ مَنْ غَلَبَ نَفْسَهُ عِنْدَ الْغَضَبِ", text: "The strong person is the one who controls themselves when angry. (Sahih Bukhari 6114)" },
+            { label: "Hadith", arabic: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ", text: "Whoever believes in Allah and the Last Day should speak good or remain silent. (Sahih Bukhari 6475)" },
+            { label: "Hadith", arabic: "الْعِلْمُ بِدَايَةُ الإِيمَانِ", text: "Knowledge is the beginning of faith. (Sahih Bukhari 3331)" },
+            { label: "Hadith", arabic: "أَحَبُّ الْأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا", text: "The most beloved deeds to Allah are those continuous, even if small. (Sahih Bukhari 6464)" },
+            { label: "Hadith", arabic: "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَة", text: "A kind word is charity. (Sahih Bukhari 2989)" },
+            { label: "Hadith", arabic: "الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ", text: "The merciful will be shown mercy by the Most Merciful. (Sahih Bukhari 7376)" },
+            { label: "Hadith", arabic: "خَيْرُ النَّاسِ أَنْفَعُهُمْ لِلنَّاسِ", text: "The best of people are those who bring most benefit to others. (Ibn Majah 4211)" },
+            { label: "Hadith", arabic: "لاَ تَحِقِرَنَّ مِنَ الْمَعْرُوفِ شَيْئاً", text: "Do not dismiss any good deed, even greeting with a smile. (Sahih Muslim 2626)" },
+            { label: "Qur'an", arabic: "فَإِنَّ مَعَ الْعُسْرِ يُسْراً", text: "Indeed, with hardship comes ease. (94:5-6)" },
+            { label: "Qur'an", arabic: "فَاذْكُرُونِي أَذْكُرْكُمْ", text: "So remember Me; I will remember you. (2:152)" },
+            { label: "Qur'an", arabic: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", text: "Indeed, Allah is with the patient. (2:153)" },
+            { label: "Qur'an", arabic: "وَلَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ", text: "And do not despair of the mercy of Allah. (39:53)" },
+            { label: "Qur'an", arabic: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ", text: "My Lord, forgive me and my parents. (14:41)" },
+            { label: "Qur'an", arabic: "الَّذِينَ آمَنُوا وَتَطْمَئِنُّ قُلُوبُهُم بِذِكْرِ اللَّهِ", text: "Those who believe, and whose hearts find rest in remembrance of Allah. (13:28)" },
+            { label: "Qur'an", arabic: "ادْعُونِي أَسْتَجِبْ لَكُمْ", text: "Call upon Me; I will respond to you. (40:60)" },
+            { label: "Qur'an", arabic: "وَإِن يَمْسَسْكَ اللَّهُ بِضُرٍّ فَلَا كَاشِفَ لَهُ", text: "Nothing shall befall us except what Allah ordained. (9:51)" },
+            { label: "Qur'an", arabic: "وَمِنْ يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجاً", text: "Whoever fears Allah, He will grant them a way out. (65:2)" },
+            { label: "Qur'an", arabic: "إِنَّ اللَّهَ لَا يُكَلِّفُ نَفْساً إِلَّا وُسْعَهَا", text: "Allah does not burden a soul beyond that it can bear. (2:286)" },
+            { label: "Dua", arabic: "رَبِّ زِدْنِي عِلْمًا", text: "My Lord, increase me in knowledge. (20:114)" },
+            { label: "Dua", arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً", text: "Our Lord, give us good in this world and good in the Hereafter. (2:201)" },
+            { label: "Dua", arabic: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي", text: "My Lord, expand for me my breast and ease for me my task. (20:25-26)" },
+            { label: "Dua", arabic: "اللَّهُمَّ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", text: "Allah, guide us to the straight path. (1:6)" },
+            { label: "Dua", arabic: "رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا", text: "Our Lord, do not burden us as You have burdened those before us. (2:286)" },
+            { label: "Reminder", arabic: "", text: "The most beloved deeds to Allah are those done consistently." },
+            { label: "Reminder", arabic: "", text: "Every morning you wake up, you have 99 chances to change your life for the better." },
+            { label: "Reminder", arabic: "", text: "Patience is not the absence of action; it is action without a reaction." },
+            { label: "Reminder", arabic: "", text: "Don't delay your repentance. Allah loves those who return to Him." },
+            { label: "Reminder", arabic: "", text: "Kindness is a language that the deaf can hear and the blind can see." },
+            { label: "Reminder", arabic: "", text: "Your rizq (sustenance) is already written. Focus on what you can control." },
+            { label: "Reminder", arabic: "", text: "When you feel weak, remember that Allah is with those who are patient." }
+        ];
+
+        let shuffledItems = [];
+        let shuffledIndex = 0;
+
+        function shuffle() {
+            shuffledItems = [...items];
+            for (let i = shuffledItems.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledItems[i], shuffledItems[j]] = [shuffledItems[j], shuffledItems[i]];
+            }
+            shuffledIndex = 0;
+        }
+
+        function rotate() {
+            if (shuffledIndex >= shuffledItems.length) {
+                shuffle();
+            }
+            const item = shuffledItems[shuffledIndex];
+            document.getElementById("label").innerText = item.label;
+            document.getElementById("text").innerHTML =
+                (item.arabic ? `<div class='arabic'>${item.arabic}</div>` : "") +
+                item.text;
+            shuffledIndex++;
+        }
+        shuffle();
+        rotate();
+        let rotationInterval = setInterval(
+            rotate,
+            Number(localStorage.getItem("rotationSpeed") || 15000)
+        );
+
+
+        /* ============================================================
+           SETTINGS PANEL LOGIC
+        ============================================================ */
+        const panel = document.getElementById("settingsPanel");
+        const overlay = document.getElementById("overlay");
+        const btn = document.getElementById("settingsBtn");
+
+        btn.onclick = () => {
+            panel.classList.add("open");
+            overlay.classList.add("show");
+        };
+
+        overlay.onclick = () => {
+            panel.classList.remove("open");
+            overlay.classList.remove("show");
+        };
+
+        /* Load saved settings */
+        function loadSettings() {
+            document.getElementById("cityInput").value = localStorage.getItem("city") || "Ottawa";
+            document.getElementById("countryInput").value = localStorage.getItem("country") || "Canada";
+
+            document.getElementById("toggleHijri").checked = JSON.parse(localStorage.getItem("showHijri") || "true");
+            document.getElementById("toggleWeather").checked = JSON.parse(localStorage.getItem("showWeather") || "true");
+            document.getElementById("toggleTicker").checked = JSON.parse(localStorage.getItem("showTicker") || "true");
+            document.getElementById("toggle12Hour").checked = JSON.parse(localStorage.getItem("use12Hour") || "true");
+
+            document.getElementById("toggleAdhan").checked = JSON.parse(localStorage.getItem("enableAdhan") || "true");
+            document.getElementById("toggleDua").checked = JSON.parse(localStorage.getItem("enableDua") || "true");
+            document.getElementById("adhanVolume").value = localStorage.getItem("adhanVolume") || "1";
+
+            document.getElementById("adhanVoice").value = localStorage.getItem("adhanVoice") || "Mecca";
+            document.getElementById("duaVoice").value = localStorage.getItem("duaVoice") || "Mecca";
+
+            document.getElementById("rotationSpeed").value = localStorage.getItem("rotationSpeed") || "15000";
+
+            document.getElementById("hijri").style.display =
+                document.getElementById("toggleHijri").checked ? "block" : "none";
+
+            document.getElementById("ticker").style.display =
+                document.getElementById("toggleTicker").checked ? "block" : "none";
+        }
+        loadSettings();
+
+        /* Save settings */
+        document.getElementById("saveSettings").onclick = () => {
+
+            /* ---------------------------------------------------------
+               SAVE LOCATION SETTINGS
+            --------------------------------------------------------- */
+            localStorage.setItem("city", document.getElementById("cityInput").value);
+            localStorage.setItem("country", document.getElementById("countryInput").value);
+
+            /* ---------------------------------------------------------
+               SAVE DISPLAY TOGGLES
+            --------------------------------------------------------- */
+            localStorage.setItem("showHijri", document.getElementById("toggleHijri").checked);
+            localStorage.setItem("showWeather", document.getElementById("toggleWeather").checked);
+            localStorage.setItem("showTicker", document.getElementById("toggleTicker").checked);
+            localStorage.setItem("use12Hour", document.getElementById("toggle12Hour").checked);
+
+            /* ---------------------------------------------------------
+               SAVE ADHAN SETTINGS
+            --------------------------------------------------------- */
+            localStorage.setItem("enableAdhan", document.getElementById("toggleAdhan").checked);
+            localStorage.setItem("enableDua", document.getElementById("toggleDua").checked);
+            localStorage.setItem("adhanVolume", document.getElementById("adhanVolume").value);
+            localStorage.setItem("adhanVoice", document.getElementById("adhanVoice").value);
+            localStorage.setItem("duaVoice", document.getElementById("duaVoice").value);
+
+            /* ---------------------------------------------------------
+               SAVE ROTATION SPEED
+            --------------------------------------------------------- */
+            localStorage.setItem("rotationSpeed", document.getElementById("rotationSpeed").value);
+
+            /* ---------------------------------------------------------
+               APPLY SETTINGS IMMEDIATELY
+            --------------------------------------------------------- */
+
+            // Show/hide Hijri date
+            document.getElementById("hijri").style.display =
+                document.getElementById("toggleHijri").checked ? "block" : "none";
+
+            // Show/hide announcement ticker
+            document.getElementById("ticker").style.display =
+                document.getElementById("toggleTicker").checked ? "block" : "none";
+
+            // Restart rotating content interval
+            clearInterval(rotationInterval);
+            rotationInterval = setInterval(
+                rotate,
+                parseInt(localStorage.getItem("rotationSpeed"))
+            );
+
+            // Reload prayer times (to apply 12-hour format if changed)
+            loadPrayerTimes();
+
+            // Show notification popup
+            const notification = document.getElementById("notification");
+            notification.innerText = "Settings Saved!";
+            notification.classList.add("show");
+
+            // Close settings panel
+            panel.classList.remove("open");
+            overlay.classList.remove("show");
+
+            // Hide notification after 2 seconds
+            setTimeout(() => {
+                notification.classList.remove("show");
+            }, 2000);
+        };
+
+        /* ============================================================
+           RESET ALL SETTINGS
+        ============================================================ */
+        document.getElementById("resetSettings").onclick = () => {
+
+            // Clear all saved preferences
+            localStorage.clear();
+
+            // Notify user
+            alert("Settings reset to default. Reloading...");
+
+            // Reload page to apply defaults
+            location.reload();
+        };
+
+    </script>
