@@ -1,6 +1,6 @@
 # Azhan Dashboard
 
-A comprehensive yet simple Islamic prayer times dashboard built with vanilla HTML, CSS, and JavaScript. Designed for Muslims to track daily prayer times, view inspirational Islamic content, and stay connected with their faith through automated Adhan calls and rotating Quranic verses, Hadiths, Duas, and spiritual reminders.
+A comprehensive yet simple [Islamic prayer times dashboard](https://samin005.github.io/Azhan-Dashboard/Azhan.html) built with vanilla HTML, CSS, and JavaScript. Designed for Muslims to track daily prayer times, view inspirational Islamic content, and stay connected with their faith through automated Adhan calls and rotating Quranic verses, Hadiths, Duas, and spiritual reminders.
 
 ## Features
 
@@ -60,4 +60,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Screenshot
 
-![screenshot](./resources/Screenshot%202026-04-07%20215633.png)
+![Azhan Dashboard Screenshot](./resources/Screenshot%202026-04-07%20215633.png)
