@@ -42,7 +42,7 @@ A comprehensive yet simple Islamic prayer times dashboard built with vanilla HTM
 
 ### Online Viewing
 
-- View live on GitHub Pages: [https://Samin005.github.io/Azhan-Dashboard/](https://yourusername.github.io/Azhan-Dashboard/)
+- View live on GitHub Pages: [https://samin005.github.io/Azhan-Dashboard/Azhan.html](https://samin005.github.io/Azhan-Dashboard/Azhan.html)
 
 ## APIs Used
 
